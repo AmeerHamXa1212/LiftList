@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const lift_1 = require("../controllers/lift");
+const validateStatus_1 = require("../middlewares/validateStatus");
+const LiftRouter = (0, express_1.Router)();
+LiftRouter.post("/createlift", lift_1.CreateLift);
+LiftRouter.get("/alllift", lift_1.GetAllLift);
+LiftRouter.get("/allliftstatus", validateStatus_1.validateStatus, lift_1.GetLiftByStatus);
+LiftRouter.patch("/editlift/:liftid", validateStatus_1.validateStatus, lift_1.EditLiftStatus);
+exports.default = LiftRouter;
