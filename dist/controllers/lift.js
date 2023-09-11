@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetLiftByStatus = exports.EditLiftStatus = exports.GetAllLift = exports.CreateLift = void 0;
 const lift_1 = __importDefault(require("../models/lift"));
 const joi_1 = __importDefault(require("joi"));
+const nullcheck_1 = require("../utility/nullcheck");
 const LiftValidation = joi_1.default.object({
     name: joi_1.default.string().required(),
     elevation_gain: joi_1.default.number().min(1).max(100).required(),
@@ -47,9 +48,12 @@ exports.CreateLift = CreateLift;
 const GetAllLift = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const Lifts = yield lift_1.default.find();
-        if (Lifts.length === 0 || !Lifts) {
-            return res.status(404).json("Lifts not found");
+        if ((0, nullcheck_1.checkAndReturnIfEmpty)(Lifts, res, "Lifts not found")) {
+            return;
         }
+        // if (Lifts.length === 0 || !Lifts) {
+        //   return res.status(404).json("Lifts not found");
+        // }
         res.status(200).json(Lifts);
     }
     catch (error) {
@@ -63,9 +67,12 @@ const EditLiftStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         const { status } = req.body;
         const liftId = req.params.liftid;
         const Lift = yield lift_1.default.findById(liftId);
-        if (!Lift) {
-            return res.status(404).json(`Lift with id : ${liftId} not found`);
+        if ((0, nullcheck_1.checkAndReturnIfEmpty)(Lift, res, `Lift with id : ${liftId} not found`)) {
+            return;
         }
+        // if (!Lift) {
+        //   return res.status(404).json(`Lift with id : ${liftId} not found`);
+        // }
         Lift.status = status;
         yield Lift.save();
         res
@@ -82,11 +89,14 @@ const GetLiftByStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     try {
         const { status } = req.body;
         const LiftByStatus = yield lift_1.default.find({ status });
-        if (LiftByStatus.length === 0 || !LiftByStatus) {
-            return res
-                .status(404)
-                .json(`Lifts with status : ${status} Not-Found/Not-Exists`);
+        if ((0, nullcheck_1.checkAndReturnIfEmpty)(LiftByStatus, res, `Lifts with status : ${status} Not-Found/Not-Exists`)) {
+            return;
         }
+        // if (LiftByStatus.length === 0 || !LiftByStatus) {
+        //   return res
+        //     .status(404)
+        //     .json(`Lifts with status : ${status} Not-Found/Not-Exists`);
+        // }
         return res.status(200).json(LiftByStatus);
     }
     catch (error) {
