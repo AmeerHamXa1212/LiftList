@@ -29,7 +29,6 @@ const CreateLift = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
                 .status(400)
                 .json(` Lift cannot be created due to error : ${error}`);
         }
-        //console.log('content of value : ', value )
         const { name, elevation_gain, status } = value;
         const newLift = {
             name: name,
@@ -51,9 +50,6 @@ const GetAllLift = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         if ((0, nullcheck_1.checkAndReturnIfEmpty)(Lifts, res, "Lifts not found")) {
             return;
         }
-        // if (Lifts.length === 0 || !Lifts) {
-        //   return res.status(404).json("Lifts not found");
-        // }
         res.status(200).json(Lifts);
     }
     catch (error) {
@@ -70,9 +66,6 @@ const EditLiftStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         if ((0, nullcheck_1.checkAndReturnIfEmpty)(Lift, res, `Lift with id : ${liftId} not found`)) {
             return;
         }
-        // if (!Lift) {
-        //   return res.status(404).json(`Lift with id : ${liftId} not found`);
-        // }
         Lift.status = status;
         yield Lift.save();
         res
@@ -92,11 +85,6 @@ const GetLiftByStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         if ((0, nullcheck_1.checkAndReturnIfEmpty)(LiftByStatus, res, `Lifts with status : ${status} Not-Found/Not-Exists`)) {
             return;
         }
-        // if (LiftByStatus.length === 0 || !LiftByStatus) {
-        //   return res
-        //     .status(404)
-        //     .json(`Lifts with status : ${status} Not-Found/Not-Exists`);
-        // }
         return res.status(200).json(LiftByStatus);
     }
     catch (error) {
