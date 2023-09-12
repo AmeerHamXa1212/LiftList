@@ -4,6 +4,7 @@ import { EStatus } from "../constants/enums";
 import LiftModel from "../models/lift";
 import mongoose from "mongoose";
 import Joi from "joi";
+import { checkAndReturnIfEmpty } from "../utility/nullcheck";
 
 const LiftValidation = Joi.object({
   name: Joi.string().required(),
@@ -23,7 +24,6 @@ export const CreateLift = async (
         .status(400)
         .json(` Lift cannot be created due to error : ${error}`);
     }
-    //console.log('content of value : ', value )
     const { name, elevation_gain, status } = value;
     const newLift = {
       name: name,
@@ -44,8 +44,8 @@ export const GetAllLift = async (
 ) => {
   try {
     const Lifts = await LiftModel.find();
-    if (Lifts.length === 0 || !Lifts) {
-      return res.status(404).json("Lifts not found");
+    if (checkAndReturnIfEmpty(Lifts, res, "Lifts not found")) {
+      return;
     }
     res.status(200).json(Lifts);
   } catch (error) {
@@ -62,9 +62,12 @@ export const EditLiftStatus = async (
     const { status } = req.body;
     const liftId = req.params.liftid;
     const Lift = await LiftModel.findById(liftId);
-    if (!Lift) {
-      return res.status(404).json(`Lift with id : ${liftId} not found`);
+    if (
+      checkAndReturnIfEmpty(Lift, res, `Lift with id : ${liftId} not found`)
+    ) {
+      return;
     }
+
     Lift.status = status;
     await Lift.save();
     res
@@ -85,10 +88,14 @@ export const GetLiftByStatus = async (
   try {
     const { status } = req.body;
     const LiftByStatus = await LiftModel.find({ status });
-    if (LiftByStatus.length === 0 || !LiftByStatus) {
-      return res
-        .status(404)
-        .json(`Lifts with status : ${status} Not-Found/Not-Exists`);
+    if (
+      checkAndReturnIfEmpty(
+        LiftByStatus,
+        res,
+        `Lifts with status : ${status} Not-Found/Not-Exists`
+      )
+    ) {
+      return;
     }
     return res.status(200).json(LiftByStatus);
   } catch (error) {
